@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Tetris</string>
+    <string name="score">分数：</string>
+    <string name="maxScore">最高分：</string>
+    <string name="start">Start</string>
+    <string name="leftButton">L</string>
+    <string name="rightButton">R</string>
+    <string name="rotateButton">Rotate</string>
+    <string name="dwonButton">D</string>
+    <string name="fallenButton">Fallen</string>
+</resources>
