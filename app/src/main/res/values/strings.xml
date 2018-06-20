@@ -9,4 +9,5 @@
     <string name="dwonButton">D</string>
     <string name="fallenButton">Fallen</string>
     <string name="stop">Stop</string>
+    <string name="next">Next</string>
 </resources>
