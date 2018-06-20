@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -18,11 +19,12 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 
-import com.example.administrator.tetris.view.TetrisView;
+import java.util.Random;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private Button stop;
     //    TetrisView tetrisView;
     //父容器宽、高
     public int xWidth, yHeight;
@@ -31,16 +33,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //辅助线画笔
     Paint linePaint;
     //方块画笔
-    Paint blockPaint;
+    Paint mBitPaint;
     //背景
     int[][] background;
     //方块
     Point[] blocks;
     int blockSize;
-    Bitmap block_brown,block_blue,block_green,block_pink,block_purple,block_red,block_yellow;
-    private Resources mResources;
-    private Paint mBitPaint;
-    private Rect mSrcRect, mDestRect;
+    int blockType;
+    //方块图片
+    Bitmap blockBitmap;
+    //图片区域，绘制位置
+    Rect mSrcRect, mDestRect;
+    //自动下落线程
+    public Thread downThread;
+    //
+    @SuppressLint("HandlerLeak")
+    public Handler handler = new Handler() {
+        public void handleMessage(android.os.Message msg) {
+            gameView.invalidate();
+        }
+    };
+    //暂停状态
+    public boolean isStop;
+    public boolean isOver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,16 +68,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Button fallen = findViewById(R.id.fallen);
         Button rotate = findViewById(R.id.rotate);
         Button start = findViewById(R.id.start);
-        Button stop = findViewById(R.id.stop);
+        stop = findViewById(R.id.stop);
         //初始化数据
         initData();
         //初始化视图
         initView();
         //初始化背景
         background = new int[10][20];
-        //初始化方块
+        //初始化方块大小 = 游戏区域宽度/10
         blockSize = xWidth / background.length;
-        blocks = new Point[]{new Point(4, 1), new Point(3, 0), new Point(3, 1), new Point(5, 1)};
         left.setOnClickListener(this);
         right.setOnClickListener(this);
         down.setOnClickListener(this);
@@ -80,30 +94,112 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         xWidth = width * 2 / 3;
         //设置游戏区域的高度 = 宽度*2
         yHeight = xWidth * 2;
-        mResources = getResources();
-
-        block_brown = ((BitmapDrawable) mResources.getDrawable(R.drawable.brown_block)).getBitmap();
-        block_blue = ((BitmapDrawable) mResources.getDrawable(R.drawable.brown_block)).getBitmap();
-        block_green = ((BitmapDrawable) mResources.getDrawable(R.drawable.brown_block)).getBitmap();
-        block_pink = ((BitmapDrawable) mResources.getDrawable(R.drawable.brown_block)).getBitmap();
-        block_purple = ((BitmapDrawable) mResources.getDrawable(R.drawable.brown_block)).getBitmap();
-        block_red = ((BitmapDrawable) mResources.getDrawable(R.drawable.brown_block)).getBitmap();
-        block_yellow = ((BitmapDrawable) mResources.getDrawable(R.drawable.brown_block)).getBitmap();
-        int bitWidth = block_brown.getWidth();
-        int bitHeight = block_brown.getHeight();
+        blocks = new Point[]{};
+        changeBitmp(1);
+        int bitWidth = blockBitmap.getWidth();
+        int bitHeight = blockBitmap.getHeight();
         mSrcRect = new Rect(0, 0, bitWidth, bitHeight);
+    }
+
+    //生成新的方块儿
+    public void newBlock() {
+        //随机生成新的方块儿
+        Random random = new Random();
+        blockType = random.nextInt(7) + 1;
+        switch (blockType) {
+            // 长条
+            case 1:
+                blocks = new Point[]{
+                        new Point(5, 0),
+                        new Point(3, 0),
+                        new Point(4, 0),
+                        new Point(6, 0)};
+                break;
+            // 田
+            case 2:
+                blocks = new Point[]{
+                        new Point(3, 0),
+                        new Point(3, 1),
+                        new Point(4, 0),
+                        new Point(4, 1)};
+                break;
+            //L
+            case 3:
+                blocks = new Point[]{
+                        new Point(4, 1),
+                        new Point(5, 0),
+                        new Point(5, 1),
+                        new Point(3, 1)};
+                break;
+            //反L
+            case 4:
+                blocks = new Point[]{
+                        new Point(4, 1),
+                        new Point(3, 0),
+                        new Point(3, 1),
+                        new Point(5, 1)};
+                break;
+            //T
+            case 5:
+                blocks = new Point[]{
+                        new Point(4, 1),
+                        new Point(3, 1),
+                        new Point(5, 1),
+                        new Point(4, 0)};
+                break;
+            //Z
+            case 6:
+                blocks = new Point[]{
+                        new Point(4, 1),
+                        new Point(3, 0),
+                        new Point(4, 0),
+                        new Point(5, 1)};
+                break;
+            //反Z
+            case 7:
+                blocks = new Point[]{
+                        new Point(5, 1),
+                        new Point(5, 0),
+                        new Point(6, 0),
+                        new Point(4, 1)};
+                break;
+        }
+        changeBitmp(blockType);
+    }
+
+    public void changeBitmp(int blockType) {
+        Resources mResources = getResources();
+        switch (blockType) {
+            case 1:
+                blockBitmap = ((BitmapDrawable) mResources.getDrawable(R.drawable.blue_block)).getBitmap();
+                break;
+            case 2:
+                blockBitmap = ((BitmapDrawable) mResources.getDrawable(R.drawable.yellow_block)).getBitmap();
+                break;
+            case 3:
+                blockBitmap = ((BitmapDrawable) mResources.getDrawable(R.drawable.green_block)).getBitmap();
+                break;
+            case 4:
+                blockBitmap = ((BitmapDrawable) mResources.getDrawable(R.drawable.pink_block)).getBitmap();
+                break;
+            case 5:
+                blockBitmap = ((BitmapDrawable) mResources.getDrawable(R.drawable.red_block)).getBitmap();
+                break;
+            case 6:
+                blockBitmap = ((BitmapDrawable) mResources.getDrawable(R.drawable.brown_block)).getBitmap();
+                break;
+            case 7:
+                blockBitmap = ((BitmapDrawable) mResources.getDrawable(R.drawable.purple_block)).getBitmap();
+                break;
 
 
+        }
     }
 
     public void initView() {
         linePaint = new Paint();
         linePaint.setColor(0xff666666);
         linePaint.setAntiAlias(true);
-
-        blockPaint = new Paint();
-        blockPaint.setColor(0xff000000);
-        blockPaint.setAntiAlias(true);
 
         mBitPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mBitPaint.setFilterBitmap(true);
@@ -114,22 +210,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         gameView = new View(this) {
             //重写游戏区域绘制
 
+            @SuppressLint("DrawAllocation")
             @Override
             protected void onDraw(Canvas canvas) {
                 super.onDraw(canvas);
+                //绘制堆积方块儿
+                for (int x = 0; x < background.length; x++) {
+                    for (int y = 0; y < background[x].length; y++) {
+//                        if (background[x][y] != 0) {
+                        if (background[x][y] != 0) {
+                            changeBitmp(background[x][y]);
+                            mDestRect = new Rect(x * blockSize, y * blockSize,
+                                    (x * blockSize) + blockSize,
+                                    (y * blockSize) + blockSize);
+                            canvas.drawBitmap(blockBitmap, mSrcRect, mDestRect, mBitPaint);
+                        }
+                    }
+                }
                 //绘制方块
+                changeBitmp(blockType);
                 for (Point block : blocks) {
                     mDestRect = new Rect(block.x * blockSize, block.y * blockSize,
-                            block.x * blockSize + blockSize,
-                            block.y * blockSize + blockSize);
-                    canvas.drawBitmap(block_brown,mSrcRect,mDestRect,mBitPaint);
-//                    canvas.drawRect(
-//                            block.x * blockSize,
-//                            block.y * blockSize,
-//                            block.x * blockSize + blockSize,
-//                            block.y * blockSize + blockSize,
-//                            blockPaint
-//                    );
+                            (block.x * blockSize) + blockSize,
+                            (block.y * blockSize) + blockSize);
+                    canvas.drawBitmap(blockBitmap, mSrcRect, mDestRect, mBitPaint);
                 }
                 //绘制辅助线
                 for (int x = 0; x < background.length; x++) {
@@ -157,7 +261,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return outMetrics.widthPixels;
     }
 
-    @SuppressLint("WrongConstant")
+    @SuppressLint({"WrongConstant", "SetTextI18n"})
     @Override
     public void onClick(View view) {
         int vid = view.getId();
@@ -169,24 +273,143 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 move(1, 0);
                 break;
             case R.id.down:
-                move(0, 1);
+                drop();
                 break;
             case R.id.fallen:
+                fallen();
                 break;
             case R.id.rotate:
                 rotate();
                 break;
             case R.id.stop:
+                setStop();
+
                 break;
             case R.id.start:
+                startGame();
                 break;
         }
         //重绘view
         gameView.invalidate();
     }
 
+    //设置暂停状态
+    @SuppressLint("SetTextI18n")
+    private void setStop() {
+        if (isStop) {
+            isStop = false;
+            stop.setText("Stop");
+        } else {
+            isStop = true;
+            stop.setText("Continue");
+        }
+    }
+
+    //开始游戏
+    private void startGame() {
+        if (downThread == null) {
+            downThread = new Thread() {
+                public void run() {
+                    super.run();
+                    while (true) {
+                        try {
+                            //休眠500毫秒
+                            sleep(500);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        //判断是否处于结束状态
+                        //判断是否处于暂停状态
+                        if (isOver || isStop)
+                            continue;
+                        //休眠完毕执行一次下落
+                        drop();
+                        //通知主线程刷新view
+                        handler.sendEmptyMessage(0);
+                    }
+                }
+            };
+            downThread.start();
+        }
+        //清除地图
+        for (int x = 0; x < background.length; x++) {
+            for (int y = 0; y < background[0].length; y++) {
+                background[x][y] = 0;
+            }
+        }
+        isOver = false;
+        isStop = false;
+        //生成新方块
+        newBlock();
+
+    }
+
+    //快速下降
+    public boolean fallen() {
+        while (true) {
+            if (!(drop())) break;
+
+        }
+        return false;
+    }
+
+    //下降
+    public boolean drop() {
+        if (isStop)
+            return false;
+        if (move(0, 1))
+            return true;
+        //移动失败 堆积处理
+        for (Point block : blocks) {
+            background[block.x][block.y] = blockType;
+        }
+        //堆积完成 消行判断
+        cleanLine();
+        //生成新的方块儿
+        newBlock();
+        isOver = checkOver();
+        return false;
+    }
+
+    //结束判断
+    public boolean checkOver() {
+        for (Point block : blocks) {
+            if (background[block.x][block.y] != 0)
+                return true;
+        }
+        return false;
+    }
+
+    //消行
+    public void cleanLine() {
+        for (int y = 0; y < background[0].length; y++) {
+            if (checkLine(y))
+                deleteLine(y);
+        }
+    }
+
+    private void deleteLine(int dy) {
+        for (int y = dy; y > 0; y--) {
+            for (int x = 0; x < background.length; x++) {
+                background[x][y] = background[x][y - 1];
+            }
+        }
+    }
+
+    //消行判断
+    public boolean checkLine(int y) {
+        for (int[] aBackground : background) {
+            if (aBackground[y] == 0)
+//            if (!aBackground[y])
+                return false;
+        }
+        return true;
+    }
+
     //移动
     public boolean move(int x, int y) {
+        if (isStop)
+            return false;
         //遍历当前方块儿数组 每一块儿加上偏移量
         for (Point block : blocks) {
             if (checkBoundary(block.x + x, block.y + y))
@@ -201,6 +424,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //旋转
     public boolean rotate() {
+        if (isStop)
+            return false;
+        if (blockType == 2)
+            return false;
         for (Point block : blocks) {
             //笛卡尔公式 顺时针旋转90°
             int checkX = -block.y + blocks[0].y + blocks[0].x;
@@ -220,6 +447,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //边界判断
     public boolean checkBoundary(int x, int y) {
-        return (x < 0 || y < 0 || x >= background.length || y >= background[0].length);
+        return (x < 0 || y < 0 || x >= background.length || y >= background[0].length
+                || background[x][y] != 0);
     }
 }
