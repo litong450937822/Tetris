@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -34,8 +35,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Paint linePaint;
     //方块画笔
     Paint mBitPaint;
+    //状态画笔
+    Paint statePaint;
     //背景
-    int[][] background;
+    int[][] StackingBlocks;
     //方块
     Point[] blocks;
     int blockSize;
@@ -74,9 +77,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //初始化视图
         initView();
         //初始化背景
-        background = new int[10][20];
+        StackingBlocks = new int[10][20];
         //初始化方块大小 = 游戏区域宽度/10
-        blockSize = xWidth / background.length;
+        blockSize = xWidth / StackingBlocks.length;
         left.setOnClickListener(this);
         right.setOnClickListener(this);
         down.setOnClickListener(this);
@@ -204,6 +207,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mBitPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mBitPaint.setFilterBitmap(true);
         mBitPaint.setDither(true);
+        statePaint = new Paint();
+        statePaint.setColor(Color.rgb(255, 0, 0));
+        statePaint.setTextSize(100);
+        statePaint.setAntiAlias(true);
         //得到父容器
         FrameLayout layoutGame = findViewById(R.id.gameView);
         //实例化游戏区域
@@ -215,11 +222,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             protected void onDraw(Canvas canvas) {
                 super.onDraw(canvas);
                 //绘制堆积方块儿
-                for (int x = 0; x < background.length; x++) {
-                    for (int y = 0; y < background[x].length; y++) {
-//                        if (background[x][y] != 0) {
-                        if (background[x][y] != 0) {
-                            changeBitmp(background[x][y]);
+                for (int x = 0; x < StackingBlocks.length; x++) {
+                    for (int y = 0; y < StackingBlocks[x].length; y++) {
+//                        if (StackingBlocks[x][y] != 0) {
+                        if (StackingBlocks[x][y] != 0) {
+                            changeBitmp(StackingBlocks[x][y]);
                             mDestRect = new Rect(x * blockSize, y * blockSize,
                                     (x * blockSize) + blockSize,
                                     (y * blockSize) + blockSize);
@@ -236,13 +243,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     canvas.drawBitmap(blockBitmap, mSrcRect, mDestRect, mBitPaint);
                 }
                 //绘制辅助线
-                for (int x = 0; x < background.length; x++) {
+                for (int x = 0; x < StackingBlocks.length; x++) {
                     canvas.drawLine(x * blockSize, 0, x * blockSize, gameView.getHeight(), linePaint);
                 }
-                for (int y = 0; y < background[0].length; y++) {
+                for (int y = 0; y < StackingBlocks[0].length; y++) {
                     canvas.drawLine(0, y * blockSize, gameView.getWidth(), y * blockSize, linePaint);
                 }
-
+                //绘制结束状态
+                if (isOver) {
+                    canvas.drawText("Game Over", gameView.getWidth() / 2 - statePaint.measureText("Game Over") / 2, gameView.getHeight() / 2, statePaint);
+                }
+                //绘制暂停状态
+                if (isStop && !isOver) {
+                    canvas.drawText("Stop", gameView.getWidth() / 2 - statePaint.measureText("Stop") / 2, gameView.getHeight() / 2, statePaint);
+                }
             }
         };
         //设置游戏区域大小
@@ -306,7 +320,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     //开始游戏
+    @SuppressLint("SetTextI18n")
     private void startGame() {
+        stop.setText("Stop");
         if (downThread == null) {
             downThread = new Thread() {
                 public void run() {
@@ -332,9 +348,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             downThread.start();
         }
         //清除地图
-        for (int x = 0; x < background.length; x++) {
-            for (int y = 0; y < background[0].length; y++) {
-                background[x][y] = 0;
+        for (int x = 0; x < StackingBlocks.length; x++) {
+            for (int y = 0; y < StackingBlocks[0].length; y++) {
+                StackingBlocks[x][y] = 0;
             }
         }
         isOver = false;
@@ -355,13 +371,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //下降
     public boolean drop() {
-        if (isStop)
+        if (isStop || isOver)
             return false;
         if (move(0, 1))
             return true;
         //移动失败 堆积处理
         for (Point block : blocks) {
-            background[block.x][block.y] = blockType;
+            StackingBlocks[block.x][block.y] = blockType;
         }
         //堆积完成 消行判断
         cleanLine();
@@ -374,7 +390,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //结束判断
     public boolean checkOver() {
         for (Point block : blocks) {
-            if (background[block.x][block.y] != 0)
+            if (StackingBlocks[block.x][block.y] != 0)
                 return true;
         }
         return false;
@@ -382,7 +398,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //消行
     public void cleanLine() {
-        for (int y = 0; y < background[0].length; y++) {
+        for (int y = 0; y < StackingBlocks[0].length; y++) {
             if (checkLine(y))
                 deleteLine(y);
         }
@@ -390,15 +406,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void deleteLine(int dy) {
         for (int y = dy; y > 0; y--) {
-            for (int x = 0; x < background.length; x++) {
-                background[x][y] = background[x][y - 1];
+            for (int x = 0; x < StackingBlocks.length; x++) {
+                StackingBlocks[x][y] = StackingBlocks[x][y - 1];
             }
         }
     }
 
     //消行判断
     public boolean checkLine(int y) {
-        for (int[] aBackground : background) {
+        for (int[] aBackground : StackingBlocks) {
             if (aBackground[y] == 0)
 //            if (!aBackground[y])
                 return false;
@@ -447,7 +463,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //边界判断
     public boolean checkBoundary(int x, int y) {
-        return (x < 0 || y < 0 || x >= background.length || y >= background[0].length
-                || background[x][y] != 0);
+        return (x < 0 || y < 0 || x >= StackingBlocks.length || y >= StackingBlocks[0].length
+                || StackingBlocks[x][y] != 0);
     }
 }
