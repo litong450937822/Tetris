@@ -88,6 +88,7 @@ public class GameControl {
         Message msg = new Message();
         msg.obj = "stop";
         time = 0;
+        blocksModel.cleanBlocksProject();
         handler.sendMessage(msg);
         scoreModel.cleanScore();
         if (downThread == null) {
@@ -123,7 +124,7 @@ public class GameControl {
         isOver = false;
         isStop = false;
         //生成新方块
-        blocksModel.newBlock();
+        blocksModel.newBlock(stackingBlocksModel);
 
     }
 
@@ -151,7 +152,7 @@ public class GameControl {
         int line = this.stackingBlocksModel.cleanLine();
         scoreModel.addScore(line);
         //生成新的方块儿
-        blocksModel.newBlock();
+        blocksModel.newBlock(stackingBlocksModel);
         isOver = checkOver();
         return false;
     }
@@ -185,6 +186,8 @@ public class GameControl {
         backgroundModel.drawState(canvas, isOver, isStop);
         //绘制背景
         backgroundModel.drawBackground(canvas);
+        //绘制当前方块投影
+        blocksModel.drawBlocksProject(canvas);
     }
 
     public void drawNext(Canvas canvas) {
