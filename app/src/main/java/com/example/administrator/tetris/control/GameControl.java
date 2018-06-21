@@ -9,14 +9,12 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
-
 import com.example.administrator.tetris.Config;
 import com.example.administrator.tetris.R;
 import com.example.administrator.tetris.model.BackgroundModel;
 import com.example.administrator.tetris.model.BlocksModel;
 import com.example.administrator.tetris.model.ScoreModel;
 import com.example.administrator.tetris.model.StackingBlocksModel;
-
 
 public class GameControl {
     private Resources mResources;
