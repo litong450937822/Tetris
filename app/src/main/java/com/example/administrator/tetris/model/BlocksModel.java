@@ -6,11 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.util.Log;
-
 import com.example.administrator.tetris.Config;
-
-import java.util.Arrays;
 import java.util.Random;
 
 public class BlocksModel {
