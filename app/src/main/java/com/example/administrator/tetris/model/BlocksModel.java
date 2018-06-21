@@ -6,7 +6,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.util.Log;
 
 import com.example.administrator.tetris.Config;
 
@@ -17,8 +16,9 @@ public class BlocksModel {
     private Paint mBitPaint;
     //方块
     public Point[] blocks;
-    public Point[] nextBlocks;
-    public  int blockType,nextBlockType;
+    private Point[] nextBlocks;
+    public int blockType;
+    private int nextBlockType;
     //方块图片
     private Bitmap blockBitmap;
     //图片区域，绘制位置

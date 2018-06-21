@@ -31,8 +31,8 @@
             <LinearLayout
                 android:id="@+id/nextBlock"
                 android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:padding="5dp"
+                android:layout_height="150dp"
+                android:padding="2dp"
                 android:orientation="vertical">
                 <TextView
                     android:layout_width="match_parent"
