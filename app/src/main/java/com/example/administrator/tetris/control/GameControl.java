@@ -9,7 +9,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
-
 import com.example.administrator.tetris.Config;
 import com.example.administrator.tetris.R;
 import com.example.administrator.tetris.model.BackgroundModel;
