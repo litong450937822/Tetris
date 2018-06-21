@@ -1,16 +1,27 @@
 package com.example.administrator.tetris;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Canvas;
+import android.graphics.Point;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.example.administrator.tetris.control.GameControl;
+import com.example.administrator.tetris.model.BackgroundModel;
+import com.example.administrator.tetris.model.BlocksModel;
+import com.example.administrator.tetris.model.StackingBlocksModel;
+import com.example.administrator.tetris.utils.TimeUtil;
 import com.example.administrator.tetris.view.NextView;
 import com.example.administrator.tetris.view.TetrisView;
 
@@ -21,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     TextView score;
     //游戏控制器
     GameControl gameControl;
+    TimeUtil timeUtil;
 
     @SuppressLint("HandlerLeak")
     public Handler handler = new Handler() {
@@ -36,6 +48,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     tetrisView.invalidate();
                     ((TextView)findViewById(R.id.score)).setText(gameControl.scoreModel.score+"");
                     ((TextView)findViewById(R.id.maxScore)).setText(gameControl.scoreModel.bestScore+"");
+                    ((TextView)findViewById(R.id.gameTime)).setText(timeUtil.stringForTime(gameControl.time));
+//                    Log.e("score", ":" + gameControl.scoreModel.score);
                     break;
                 case "stop":
                     ((Button)findViewById(R.id.stop)).setText("Stop");
@@ -73,6 +87,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         gameControl = new GameControl(handler, mResources, this);
         tetrisView.setGameControl(gameControl);
         nextView.setGameControl(gameControl);
+        timeUtil = new TimeUtil();
     }
 
     @SuppressLint({"WrongConstant", "SetTextI18n"})
