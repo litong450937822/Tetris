@@ -14,4 +14,6 @@ public class Config {
     public static int width;
 
     public static int blockSize;
+
+    public static int frame;
 }

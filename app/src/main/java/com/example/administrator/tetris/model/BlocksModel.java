@@ -111,6 +111,7 @@ public class BlocksModel {
                 break;
         }
     }
+
     //生成下一块
     private void newNextBlocks() {
         Random random = new Random();
@@ -181,22 +182,23 @@ public class BlocksModel {
         //绘制方块
         blockBitmap = bitmpModel.changeBitmp(blockType, mResources);
         for (Point block : blocks) {
-            Rect mDestRect = new Rect(block.x * Config.blockSize, block.y * Config.blockSize,
-                    (block.x * Config.blockSize) + Config.blockSize,
-                    (block.y * Config.blockSize) + Config.blockSize);
+            Rect mDestRect = new Rect(block.x * Config.blockSize + Config.frame,
+                    block.y * Config.blockSize + Config.frame,
+                    (block.x * Config.blockSize) + Config.blockSize+Config.frame,
+                    (block.y * Config.blockSize) + Config.blockSize+Config.frame);
             canvas.drawBitmap(blockBitmap, mSrcRect, mDestRect, mBitPaint);
         }
     }
 
     //绘制下一个方块
     public void drawNextBlocks(Canvas canvas) {
-        if (nextBlocks==null)
+        if (nextBlocks == null)
             return;
         //绘制方块
         blockBitmap = bitmpModel.changeBitmp(nextBlockType, mResources);
         for (Point block : nextBlocks) {
-            Rect mDestRect = new Rect(block.x * Config.blockSize+Config.blockSize/2, block.y * Config.blockSize,
-                    (block.x * Config.blockSize) + Config.blockSize+Config.blockSize/2,
+            Rect mDestRect = new Rect(block.x * Config.blockSize + Config.blockSize / 2, block.y * Config.blockSize,
+                    (block.x * Config.blockSize) + Config.blockSize + Config.blockSize / 2,
                     (block.y * Config.blockSize) + Config.blockSize);
             canvas.drawBitmap(blockBitmap, mSrcRect, mDestRect, mBitPaint);
         }

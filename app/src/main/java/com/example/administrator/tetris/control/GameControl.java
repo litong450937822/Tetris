@@ -9,16 +9,14 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
+
 import com.example.administrator.tetris.Config;
 import com.example.administrator.tetris.R;
 import com.example.administrator.tetris.model.BackgroundModel;
 import com.example.administrator.tetris.model.BlocksModel;
 import com.example.administrator.tetris.model.ScoreModel;
 import com.example.administrator.tetris.model.StackingBlocksModel;
-import com.example.administrator.tetris.utils.TimeUtil;
-
-import java.util.Date;
-import java.util.logging.SimpleFormatter;
+import com.example.administrator.tetris.utils.DensityUtil;
 
 public class GameControl {
     private Resources mResources;
@@ -31,7 +29,6 @@ public class GameControl {
     private BlocksModel blocksModel;
     //分数模型
     public ScoreModel scoreModel;
-    private TimeUtil timeUtil;
     //暂停状态
     private boolean isStop;
     private boolean isOver;
@@ -65,10 +62,11 @@ public class GameControl {
     private void initData(Context context) {
         //屏幕宽度
         int width = getScrennWidth(context);
+        Config.frame = DensityUtil.dpTopx(context, 5);
         //设置游戏区域宽度 = 屏幕宽度*2/3
-        Config.xWidth = width * 2 / 3;
+        Config.xWidth = width * 2 / 3 - (Config.frame);
         //设置游戏区域的高度 = 宽度*2
-        Config.yHeight = Config.xWidth * 2;
+        Config.yHeight = Config.xWidth * 2 + (Config.frame/2);
         Config.width = width - Config.xWidth;
         //初始化方块大小 = 游戏区域宽度/10
         Config.blockSize = Config.xWidth / Config.backgroundX;

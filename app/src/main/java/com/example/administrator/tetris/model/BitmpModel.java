@@ -19,19 +19,19 @@ public class BitmpModel {
                 blockBitmap = ((BitmapDrawable) mResources.getDrawable(R.drawable.yellow_block)).getBitmap();
                 break;
             case 3:
-                blockBitmap = ((BitmapDrawable) mResources.getDrawable(R.drawable.green_block)).getBitmap();
+                blockBitmap = ((BitmapDrawable) mResources.getDrawable(R.drawable.brown_block)).getBitmap();
                 break;
             case 4:
                 blockBitmap = ((BitmapDrawable) mResources.getDrawable(R.drawable.pink_block)).getBitmap();
                 break;
             case 5:
-                blockBitmap = ((BitmapDrawable) mResources.getDrawable(R.drawable.red_block)).getBitmap();
+                blockBitmap = ((BitmapDrawable) mResources.getDrawable(R.drawable.purple_block)).getBitmap();
                 break;
             case 6:
-                blockBitmap = ((BitmapDrawable) mResources.getDrawable(R.drawable.brown_block)).getBitmap();
+                blockBitmap = ((BitmapDrawable) mResources.getDrawable(R.drawable.red_block)).getBitmap();
                 break;
             case 7:
-                blockBitmap = ((BitmapDrawable) mResources.getDrawable(R.drawable.purple_block)).getBitmap();
+                blockBitmap = ((BitmapDrawable) mResources.getDrawable(R.drawable.green_block)).getBitmap();
                 break;
             default:
                 break;

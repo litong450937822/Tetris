@@ -33,11 +33,12 @@ public class BackgroundModel {
 
     //绘制辅助线
     public void drawLine(Canvas canvas) {
-        for (int x = 0; x < Config.backgroundX; x++) {
-            canvas.drawLine(x * Config.blockSize, 0, x * Config.blockSize, yHeight, linePaint);
+        for (int x = 0; x < Config.backgroundX+1; x++) {
+            canvas.drawLine(x * Config.blockSize+Config.frame, Config.frame,
+                    x * Config.blockSize+Config.frame, yHeight, linePaint);
         }
-        for (int y = 0; y < Config.backgroundY; y++) {
-            canvas.drawLine(0, y * Config.blockSize, xWidth, y * Config.blockSize, linePaint);
+        for (int y = 0; y < Config.backgroundY+1; y++) {
+            canvas.drawLine(Config.frame, y * Config.blockSize+Config.frame, xWidth+Config.frame*3/4, y * Config.blockSize+Config.frame, linePaint);
         }
     }
 
@@ -53,6 +54,6 @@ public class BackgroundModel {
     }
 
     public void drawBackground(Canvas canvas) {
-        canvas.drawRect(0,0,Config.xWidth,Config.yHeight,backgroundPaint);
+        canvas.drawRect(Config.frame,Config.frame,Config.xWidth+Config.frame*3/4,Config.yHeight,backgroundPaint);
     }
 }

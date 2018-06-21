@@ -15,9 +15,6 @@ public class TimeUtil {
 
     /**
      * 把毫秒转换成：1：20：30这样的形式
-     *
-     * @param timeMs
-     * @return
      */
     public String stringForTime(int timeMs) {
         if (timeMs < 1000) {

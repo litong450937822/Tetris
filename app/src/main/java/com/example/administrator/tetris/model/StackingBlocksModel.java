@@ -38,9 +38,10 @@ public class StackingBlocksModel {
             for (int y = 0; y < StackingBlocks[x].length; y++) {
                 if (StackingBlocks[x][y] != 0) {
                     blockBitmap = bitmpModel.changeBitmp(StackingBlocks[x][y], mResources);
-                    Rect mDestRect = new Rect(x * Config.blockSize, y * Config.blockSize,
-                            (x * Config.blockSize) + Config.blockSize,
-                            (y * Config.blockSize) + Config.blockSize);
+                    Rect mDestRect = new Rect(x * Config.blockSize + Config.frame,
+                            y * Config.blockSize + Config.frame,
+                            (x * Config.blockSize) + Config.blockSize + Config.frame,
+                            (y * Config.blockSize) + Config.blockSize + Config.frame);
                     canvas.drawBitmap(blockBitmap, mSrcRect, mDestRect, mBitPaint);
                 }
             }
@@ -58,7 +59,7 @@ public class StackingBlocksModel {
 
     //消行
     public int cleanLine() {
-        int line =0;
+        int line = 0;
         for (int y = 0; y < StackingBlocks[0].length; y++) {
             if (checkLine(y)) {
                 deleteLine(y);
