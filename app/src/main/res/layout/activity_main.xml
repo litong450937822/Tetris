@@ -9,14 +9,14 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_weight="4.8"
+        android:layout_weight="4.5"
         android:baselineAligned="false"
         android:orientation="horizontal">
 
         <com.example.administrator.tetris.view.TetrisView
             android:id="@+id/gameView"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="2"
             android:orientation="horizontal"
             tools:ignore="NestedWeights" />
@@ -24,12 +24,12 @@
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical">
 
             <LinearLayout
-                android:id="@+id/nextBlockView"
+                android:id="@+id/nextBlock"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -42,6 +42,11 @@
                     android:layout_marginLeft="5dp"
                     android:layout_marginTop="5dp"
                     android:layout_marginStart="5dp" />
+                <com.example.administrator.tetris.view.NextView
+                    android:id="@+id/nextBlockView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:ignore="DuplicateIds" />
             </LinearLayout>
 
             <LinearLayout

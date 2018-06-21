@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.util.Log;
 
 import com.example.administrator.tetris.Config;
 
@@ -16,8 +17,8 @@ public class BlocksModel {
     private Paint mBitPaint;
     //方块
     public Point[] blocks;
-    public int blockType;
-    private int blockSize;
+    public Point[] nextBlocks;
+    public  int blockType,nextBlockType;
     //方块图片
     private Bitmap blockBitmap;
     //图片区域，绘制位置
@@ -25,24 +26,37 @@ public class BlocksModel {
     private Resources mResources;
     private BitmpModel bitmpModel = new BitmpModel();
 
-    public BlocksModel(int blockSize,Resources mResources) {
+    public BlocksModel(Resources mResources) {
         this.mResources = mResources;
         blocks = new Point[]{};
-        blockBitmap = bitmpModel.changeBitmp(1,mResources);
+        nextBlocks = new Point[]{};
+//        nextBlocks = new Point[]{
+//                new Point(0, 0),
+//                new Point(1, 0),
+//                new Point(1, 1),
+//                new Point(2, 1)};
+        blockBitmap = bitmpModel.changeBitmp(1, mResources);
         int bitWidth = blockBitmap.getWidth();
         int bitHeight = blockBitmap.getHeight();
         mSrcRect = new Rect(0, 0, bitWidth, bitHeight);
         mBitPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mBitPaint.setFilterBitmap(true);
         mBitPaint.setDither(true);
-        this.blockSize = blockSize;
     }
 
     //生成新的方块儿
     public void newBlock() {
-        //随机生成新的方块儿
-        Random random = new Random();
-        blockType = random.nextInt(7) + 1;
+        if (nextBlocks == null)
+            //生成下一块
+            newNextBlocks();
+        //把下一块赋给当前块
+        blockType = nextBlockType;
+        blocksData(blockType);
+        //生成下一块
+        newNextBlocks();
+    }
+
+    private void blocksData(int blockType) {
         switch (blockType) {
             // 长条
             case 1:
@@ -76,6 +90,7 @@ public class BlocksModel {
                         new Point(3, 1),
                         new Point(5, 1)};
                 break;
+
             //T
             case 5:
                 blocks = new Point[]{
@@ -101,22 +116,98 @@ public class BlocksModel {
                         new Point(4, 1)};
                 break;
         }
-        bitmpModel.changeBitmp(blockType,mResources);
+    }
+    //生成下一块
+    private void newNextBlocks() {
+        Random random = new Random();
+        nextBlockType = random.nextInt(7) + 1;
+        switch (nextBlockType) {
+            // 长条
+            case 1:
+                nextBlocks = new Point[]{
+                        new Point(0, 1),
+                        new Point(1, 1),
+                        new Point(2, 1),
+                        new Point(3, 1)};
+                break;
+            // 田
+            case 2:
+                nextBlocks = new Point[]{
+                        new Point(1, 0),
+                        new Point(2, 0),
+                        new Point(1, 1),
+                        new Point(2, 1)};
+                break;
+            //L
+            case 3:
+                nextBlocks = new Point[]{
+                        new Point(2, 0),
+                        new Point(0, 1),
+                        new Point(1, 1),
+                        new Point(2, 1)};
+                break;
+            //反L
+            case 4:
+                nextBlocks = new Point[]{
+                        new Point(0, 0),
+                        new Point(0, 1),
+                        new Point(1, 1),
+                        new Point(2, 1)};
+                break;
+
+            //T
+            case 5:
+                nextBlocks = new Point[]{
+                        new Point(1, 0),
+                        new Point(0, 1),
+                        new Point(1, 1),
+                        new Point(2, 1)};
+                break;
+            //Z
+            case 6:
+                nextBlocks = new Point[]{
+                        new Point(0, 0),
+                        new Point(1, 0),
+                        new Point(1, 1),
+                        new Point(2, 1)};
+                break;
+            //反Z
+            case 7:
+                nextBlocks = new Point[]{
+                        new Point(1, 0),
+                        new Point(2, 0),
+                        new Point(0, 1),
+                        new Point(1, 1)};
+                break;
+        }
     }
 
-
-
+    //绘制当前方块
     public void drawBlocks(Canvas canvas) {
         //绘制方块
-        blockBitmap = bitmpModel.changeBitmp(blockType,mResources);
+        blockBitmap = bitmpModel.changeBitmp(blockType, mResources);
         for (Point block : blocks) {
-            Rect mDestRect = new Rect(block.x * blockSize, block.y * blockSize,
-                    (block.x * blockSize) + blockSize,
-                    (block.y * blockSize) + blockSize);
+            Rect mDestRect = new Rect(block.x * Config.blockSize, block.y * Config.blockSize,
+                    (block.x * Config.blockSize) + Config.blockSize,
+                    (block.y * Config.blockSize) + Config.blockSize);
             canvas.drawBitmap(blockBitmap, mSrcRect, mDestRect, mBitPaint);
         }
     }
 
+    //绘制下一个方块
+    public void drawNextBlocks(Canvas canvas) {
+        if (nextBlocks==null)
+            return;
+        //绘制方块
+        blockBitmap = bitmpModel.changeBitmp(blockType, mResources);
+        for (Point block : nextBlocks) {
+            Log.e("nextBlock",":"+block.x);
+            Rect mDestRect = new Rect(block.x * Config.blockSize+Config.blockSize/2, block.y * Config.blockSize,
+                    (block.x * Config.blockSize) + Config.blockSize+Config.blockSize/2,
+                    (block.y * Config.blockSize) + Config.blockSize);
+            canvas.drawBitmap(blockBitmap, mSrcRect, mDestRect, mBitPaint);
+        }
+    }
 
 
     //移动
@@ -125,7 +216,7 @@ public class BlocksModel {
             return false;
         //遍历当前方块儿数组 每一块儿加上偏移量
         for (Point block : blocks) {
-            if (checkBoundary(block.x + x, block.y + y,stackingBlocksModel))
+            if (checkBoundary(block.x + x, block.y + y, stackingBlocksModel))
                 return false;
         }
         for (Point block : blocks) {
@@ -161,6 +252,6 @@ public class BlocksModel {
     //边界判断
     private boolean checkBoundary(int x, int y, StackingBlocksModel stackingBlocksModel) {
         return (x < 0 || y < 0 || x >= Config.backgroundX || y >= Config.backgroundY
-                ||stackingBlocksModel.StackingBlocks[x][y] != 0);
+                || stackingBlocksModel.StackingBlocks[x][y] != 0);
     }
 }

@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
+
 import com.example.administrator.tetris.Config;
 import com.example.administrator.tetris.R;
 import com.example.administrator.tetris.model.BackgroundModel;
@@ -31,11 +32,16 @@ public class GameControl {
     //自动下落线程
     private Thread downThread;
 
-    public GameControl(android.os.Handler handler,Resources resources,Context context) {
+    public GameControl(android.os.Handler handler, Resources resources, Context context) {
         this.handler = handler;
         this.mResources = resources;
         initData(context);
     }
+
+    public GameControl(Resources resources) {
+
+    }
+
     //设置暂停状态
     @SuppressLint("SetTextI18n")
     private void setStop() {
@@ -59,14 +65,15 @@ public class GameControl {
         Config.xWidth = width * 2 / 3;
         //设置游戏区域的高度 = 宽度*2
         Config.yHeight = Config.xWidth * 2;
+        Config.width = width - Config.xWidth;
         //初始化方块大小 = 游戏区域宽度/10
-        int blockSize = Config.xWidth / Config.backgroundX;
+        Config.blockSize = Config.xWidth / Config.backgroundX;
         //实例化当前块模型
-        blocksModel = new BlocksModel(blockSize, mResources);
+        blocksModel = new BlocksModel(mResources);
         //实例化背景模型
-        backgroundModel = new BackgroundModel(blockSize, Config.xWidth, Config.yHeight);
+        backgroundModel = new BackgroundModel(Config.xWidth, Config.yHeight);
         //实例化堆积块模型
-        stackingBlocksModel = new StackingBlocksModel(blockSize, mResources);
+        stackingBlocksModel = new StackingBlocksModel(mResources);
     }
 
     //开始游戏
@@ -146,6 +153,7 @@ public class GameControl {
         }
         return false;
     }
+
     private static int getScrennWidth(Context context) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         DisplayMetrics outMetrics = new DisplayMetrics();
@@ -164,6 +172,12 @@ public class GameControl {
         backgroundModel.drawLine(canvas);
         //绘制游戏状态
         backgroundModel.drawState(canvas, isOver, isStop);
+        //绘制背景
+        backgroundModel.drawBackground(canvas);
+    }
+
+    public void  drawNext(Canvas canvas) {
+        blocksModel.drawNextBlocks(canvas);
     }
 
     public void onClick(int id) {

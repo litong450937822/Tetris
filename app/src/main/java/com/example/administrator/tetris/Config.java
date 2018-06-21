@@ -10,4 +10,8 @@ public class Config {
     public static int xWidth;
     //地图y方向宽度
     public static int yHeight;
+
+    public static int width;
+
+    public static int blockSize;
 }

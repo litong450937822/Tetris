@@ -20,11 +20,13 @@ import com.example.administrator.tetris.control.GameControl;
 import com.example.administrator.tetris.model.BackgroundModel;
 import com.example.administrator.tetris.model.BlocksModel;
 import com.example.administrator.tetris.model.StackingBlocksModel;
+import com.example.administrator.tetris.view.NextView;
 import com.example.administrator.tetris.view.TetrisView;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     TetrisView tetrisView;
+    NextView nextView;
     //游戏控制器
     GameControl gameControl;
 
@@ -34,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
         tetrisView = findViewById(R.id.gameView);
+        nextView = findViewById(R.id.nextBlockView);
         Button left = findViewById(R.id.left);
         Button right = findViewById(R.id.right);
         Button down = findViewById(R.id.down);
@@ -56,5 +59,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tetrisView.gameControl.onClick(view.getId());
         //重绘view
         tetrisView.invalidate();
+        nextView.invalidate();
     }
 }

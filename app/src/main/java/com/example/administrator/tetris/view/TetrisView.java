@@ -47,8 +47,8 @@ public class TetrisView extends View {
 
     public TetrisView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        this.setLayoutParams(new WindowManager.LayoutParams(Config.xWidth, Config.yHeight));
-        this.setBackgroundColor(0x10000000);
+//        this.setLayoutParams(new WindowManager.LayoutParams(Config.xWidth, Config.yHeight));
+//        this.setBackgroundColor(0x10000000);
         Resources mResources = getResources();
         gameControl = new GameControl(handler, mResources, context);
     }

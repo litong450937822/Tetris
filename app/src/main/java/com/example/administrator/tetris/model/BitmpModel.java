@@ -33,7 +33,8 @@ public class BitmpModel {
             case 7:
                 blockBitmap = ((BitmapDrawable) mResources.getDrawable(R.drawable.purple_block)).getBitmap();
                 break;
-
+            default:
+                break;
         }
         return blockBitmap;
     }

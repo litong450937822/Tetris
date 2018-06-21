@@ -13,7 +13,6 @@ public class StackingBlocksModel {
     private Paint mBitPaint;
     //背景
     public int[][] StackingBlocks;
-    private int blockSize;
     //方块图片
     private Bitmap blockBitmap;
     //图片区域，绘制位置
@@ -21,12 +20,11 @@ public class StackingBlocksModel {
     private Resources mResources;
     private BitmpModel bitmpModel = new BitmpModel();
 
-    public StackingBlocksModel(int blockSize, Resources mResources) {
+    public StackingBlocksModel(Resources mResources) {
         this.mResources = mResources;
         //初始化堆积数组
         this.StackingBlocks = new int[Config.backgroundX][Config.backgroundY];
-        this.blockSize = blockSize;
-        blockBitmap = bitmpModel.changeBitmp(1,mResources);
+        blockBitmap = bitmpModel.changeBitmp(1, mResources);
         int bitWidth = blockBitmap.getWidth();
         int bitHeight = blockBitmap.getHeight();
         mSrcRect = new Rect(0, 0, bitWidth, bitHeight);
@@ -39,10 +37,10 @@ public class StackingBlocksModel {
         for (int x = 0; x < StackingBlocks.length; x++) {
             for (int y = 0; y < StackingBlocks[x].length; y++) {
                 if (StackingBlocks[x][y] != 0) {
-                    blockBitmap = bitmpModel.changeBitmp(StackingBlocks[x][y],mResources);
-                    Rect mDestRect = new Rect(x * blockSize, y * blockSize,
-                            (x * blockSize) + blockSize,
-                            (y * blockSize) + blockSize);
+                    blockBitmap = bitmpModel.changeBitmp(StackingBlocks[x][y], mResources);
+                    Rect mDestRect = new Rect(x * Config.blockSize, y * Config.blockSize,
+                            (x * Config.blockSize) + Config.blockSize,
+                            (y * Config.blockSize) + Config.blockSize);
                     canvas.drawBitmap(blockBitmap, mSrcRect, mDestRect, mBitPaint);
                 }
             }

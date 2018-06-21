@@ -12,18 +12,21 @@ public class BackgroundModel {
     private Paint linePaint;
     //状态画笔
     private Paint statePaint;
-    private int blockSize;
+    //背景色画笔
+    private Paint backgroundPaint;
 
 
-    public BackgroundModel(int blockSize, int xWidth, int yHeight) {
+    public BackgroundModel(int xWidth, int yHeight) {
         linePaint = new Paint();
         linePaint.setColor(0xff666666);
         linePaint.setAntiAlias(true);
+        backgroundPaint = new Paint();
+        backgroundPaint.setColor(0x10000000);
+        backgroundPaint.setAntiAlias(true);
         statePaint = new Paint();
         statePaint.setColor(Color.rgb(255, 0, 0));
         statePaint.setTextSize(100);
         statePaint.setAntiAlias(true);
-        this.blockSize = blockSize;
         this.xWidth = xWidth;
         this.yHeight = yHeight;
     }
@@ -31,10 +34,10 @@ public class BackgroundModel {
     //绘制辅助线
     public void drawLine(Canvas canvas) {
         for (int x = 0; x < Config.backgroundX; x++) {
-            canvas.drawLine(x * blockSize, 0, x * blockSize, yHeight, linePaint);
+            canvas.drawLine(x * Config.blockSize, 0, x * Config.blockSize, yHeight, linePaint);
         }
         for (int y = 0; y < Config.backgroundY; y++) {
-            canvas.drawLine(0, y * blockSize, xWidth, y * blockSize, linePaint);
+            canvas.drawLine(0, y * Config.blockSize, xWidth, y * Config.blockSize, linePaint);
         }
     }
 
@@ -47,5 +50,9 @@ public class BackgroundModel {
         if (isStop && !isOver) {
             canvas.drawText("Stop", xWidth / 2 - statePaint.measureText("Stop") / 2, yHeight / 2, statePaint);
         }
+    }
+
+    public void drawBackground(Canvas canvas) {
+        canvas.drawRect(0,0,Config.xWidth,Config.yHeight,backgroundPaint);
     }
 }
