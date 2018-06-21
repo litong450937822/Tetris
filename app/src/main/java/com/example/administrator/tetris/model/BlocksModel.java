@@ -29,12 +29,6 @@ public class BlocksModel {
     public BlocksModel(Resources mResources) {
         this.mResources = mResources;
         blocks = new Point[]{};
-        nextBlocks = new Point[]{};
-//        nextBlocks = new Point[]{
-//                new Point(0, 0),
-//                new Point(1, 0),
-//                new Point(1, 1),
-//                new Point(2, 1)};
         blockBitmap = bitmpModel.changeBitmp(1, mResources);
         int bitWidth = blockBitmap.getWidth();
         int bitHeight = blockBitmap.getHeight();
@@ -133,51 +127,51 @@ public class BlocksModel {
             // 田
             case 2:
                 nextBlocks = new Point[]{
-                        new Point(1, 0),
-                        new Point(2, 0),
                         new Point(1, 1),
-                        new Point(2, 1)};
+                        new Point(2, 1),
+                        new Point(1, 2),
+                        new Point(2, 2)};
                 break;
             //L
             case 3:
                 nextBlocks = new Point[]{
-                        new Point(2, 0),
-                        new Point(0, 1),
-                        new Point(1, 1),
-                        new Point(2, 1)};
+                        new Point(2, 1),
+                        new Point(0, 2),
+                        new Point(1, 2),
+                        new Point(2, 2)};
                 break;
             //反L
             case 4:
                 nextBlocks = new Point[]{
-                        new Point(0, 0),
                         new Point(0, 1),
-                        new Point(1, 1),
-                        new Point(2, 1)};
+                        new Point(0, 2),
+                        new Point(1, 2),
+                        new Point(2, 2)};
                 break;
 
             //T
             case 5:
                 nextBlocks = new Point[]{
-                        new Point(1, 0),
-                        new Point(0, 1),
                         new Point(1, 1),
-                        new Point(2, 1)};
+                        new Point(0, 2),
+                        new Point(1, 2),
+                        new Point(2, 2)};
                 break;
             //Z
             case 6:
                 nextBlocks = new Point[]{
-                        new Point(0, 0),
-                        new Point(1, 0),
+                        new Point(0, 1),
                         new Point(1, 1),
-                        new Point(2, 1)};
+                        new Point(1, 2),
+                        new Point(2, 2)};
                 break;
             //反Z
             case 7:
                 nextBlocks = new Point[]{
-                        new Point(1, 0),
-                        new Point(2, 0),
-                        new Point(0, 1),
-                        new Point(1, 1)};
+                        new Point(1, 1),
+                        new Point(2, 1),
+                        new Point(0, 2),
+                        new Point(1, 2)};
                 break;
         }
     }
@@ -199,9 +193,8 @@ public class BlocksModel {
         if (nextBlocks==null)
             return;
         //绘制方块
-        blockBitmap = bitmpModel.changeBitmp(blockType, mResources);
+        blockBitmap = bitmpModel.changeBitmp(nextBlockType, mResources);
         for (Point block : nextBlocks) {
-            Log.e("nextBlock",":"+block.x);
             Rect mDestRect = new Rect(block.x * Config.blockSize+Config.blockSize/2, block.y * Config.blockSize,
                     (block.x * Config.blockSize) + Config.blockSize+Config.blockSize/2,
                     (block.y * Config.blockSize) + Config.blockSize);

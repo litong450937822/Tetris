@@ -18,39 +18,21 @@ import com.example.administrator.tetris.control.GameControl;
  * 此类目前没用
  */
 public class TetrisView extends View {
-    public GameControl gameControl;
+    private GameControl gameControl;
     private TetrisView tetrisView = findViewById(R.id.gameView);
     private Button stop;
 
-    @SuppressLint("HandlerLeak")
-    public Handler handler = new Handler() {
-        @SuppressLint("SetTextI18n")
-        public void handleMessage(android.os.Message msg) {
-            String type = (String) msg.obj;
-            if (type == null) {
-                return;
-            }
-            switch (type) {
-                case "invalidate":
-                    //刷新重绘view
-                    tetrisView.invalidate();
-                    break;
-                case "stop":
-//                    stop.setText("Stop");
-                    break;
-                case "continue":
-//                    stop.setText("Continue");
-                    break;
-            }
-        }
-    };
+
 
     public TetrisView(Context context, AttributeSet attrs) {
         super(context, attrs);
 //        this.setLayoutParams(new WindowManager.LayoutParams(Config.xWidth, Config.yHeight));
 //        this.setBackgroundColor(0x10000000);
-        Resources mResources = getResources();
-        gameControl = new GameControl(handler, mResources, context);
+
+    }
+
+    public void setGameControl(GameControl gameControl) {
+        this.gameControl = gameControl;
     }
 
     @Override

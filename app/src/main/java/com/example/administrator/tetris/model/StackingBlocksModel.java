@@ -57,11 +57,15 @@ public class StackingBlocksModel {
     }
 
     //消行
-    public void cleanLine() {
+    public int cleanLine() {
+        int line =0;
         for (int y = 0; y < StackingBlocks[0].length; y++) {
-            if (checkLine(y))
+            if (checkLine(y)) {
                 deleteLine(y);
+                line++;
+            }
         }
+        return line;
     }
 
     private void deleteLine(int dy) {
@@ -76,7 +80,6 @@ public class StackingBlocksModel {
     private boolean checkLine(int y) {
         for (int[] aBackground : StackingBlocks) {
             if (aBackground[y] == 0)
-//            if (!aBackground[y])
                 return false;
         }
         return true;

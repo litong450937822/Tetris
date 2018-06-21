@@ -15,6 +15,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import com.example.administrator.tetris.control.GameControl;
 import com.example.administrator.tetris.model.BackgroundModel;
@@ -27,8 +28,35 @@ import com.example.administrator.tetris.view.TetrisView;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     TetrisView tetrisView;
     NextView nextView;
+    TextView score;
     //游戏控制器
     GameControl gameControl;
+
+    @SuppressLint("HandlerLeak")
+    public Handler handler = new Handler() {
+        @SuppressLint("SetTextI18n")
+        public void handleMessage(android.os.Message msg) {
+            String type = (String) msg.obj;
+            if (type == null) {
+                return;
+            }
+            switch (type) {
+                case "invalidate":
+                    //刷新重绘view
+                    tetrisView.invalidate();
+                    ((TextView)findViewById(R.id.score)).setText(gameControl.scoreModel.score+"");
+                    ((TextView)findViewById(R.id.maxScore)).setText(gameControl.scoreModel.bestScore+"");
+//                    Log.e("score", ":" + gameControl.scoreModel.score);
+                    break;
+                case "stop":
+                    ((Button)findViewById(R.id.stop)).setText("Stop");
+                    break;
+                case "continue":
+                    ((Button)findViewById(R.id.stop)).setText("Continue");
+                    break;
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Button rotate = findViewById(R.id.rotate);
         Button start = findViewById(R.id.start);
         Button stop = findViewById(R.id.stop);
+        score = findViewById(R.id.score);
         left.setOnClickListener(this);
         right.setOnClickListener(this);
         down.setOnClickListener(this);
@@ -51,12 +80,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         rotate.setOnClickListener(this);
         start.setOnClickListener(this);
         stop.setOnClickListener(this);
+        Resources mResources = getResources();
+        gameControl = new GameControl(handler, mResources, this);
+        tetrisView.setGameControl(gameControl);
+        nextView.setGameControl(gameControl);
     }
 
     @SuppressLint({"WrongConstant", "SetTextI18n"})
     @Override
     public void onClick(View view) {
-        tetrisView.gameControl.onClick(view.getId());
+        gameControl.onClick(view.getId());
         //重绘view
         tetrisView.invalidate();
         nextView.invalidate();

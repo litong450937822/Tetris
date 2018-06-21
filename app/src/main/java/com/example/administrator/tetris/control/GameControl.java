@@ -14,6 +14,7 @@ import com.example.administrator.tetris.Config;
 import com.example.administrator.tetris.R;
 import com.example.administrator.tetris.model.BackgroundModel;
 import com.example.administrator.tetris.model.BlocksModel;
+import com.example.administrator.tetris.model.ScoreModel;
 import com.example.administrator.tetris.model.StackingBlocksModel;
 
 
@@ -26,6 +27,8 @@ public class GameControl {
     private StackingBlocksModel stackingBlocksModel;
     //当前块模型
     private BlocksModel blocksModel;
+    //分数模型
+    public ScoreModel scoreModel;
     //暂停状态
     private boolean isStop;
     private boolean isOver;
@@ -36,10 +39,6 @@ public class GameControl {
         this.handler = handler;
         this.mResources = resources;
         initData(context);
-    }
-
-    public GameControl(Resources resources) {
-
     }
 
     //设置暂停状态
@@ -74,6 +73,8 @@ public class GameControl {
         backgroundModel = new BackgroundModel(Config.xWidth, Config.yHeight);
         //实例化堆积块模型
         stackingBlocksModel = new StackingBlocksModel(mResources);
+        //实例化分数模型
+        scoreModel = new ScoreModel();
     }
 
     //开始游戏
@@ -82,6 +83,7 @@ public class GameControl {
         Message msg = new Message();
         msg.obj = "stop";
         handler.sendMessage(msg);
+        scoreModel.cleanScore();
         if (downThread == null) {
             downThread = new Thread() {
                 public void run() {
@@ -138,7 +140,8 @@ public class GameControl {
             this.stackingBlocksModel.StackingBlocks[block.x][block.y] = blocksModel.blockType;
         }
         //堆积完成 消行判断
-        this.stackingBlocksModel.cleanLine();
+        int line = this.stackingBlocksModel.cleanLine();
+        scoreModel.addScore(line);
         //生成新的方块儿
         blocksModel.newBlock();
         isOver = checkOver();

@@ -31,17 +31,15 @@
             <LinearLayout
                 android:id="@+id/nextBlock"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_height="120dp"
+                android:padding="5dp"
                 android:orientation="vertical">
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/next"
                     android:textSize="20sp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginStart="5dp" />
+                    android:background="#eee" />
                 <com.example.administrator.tetris.view.NextView
                     android:id="@+id/nextBlockView"
                     android:layout_width="wrap_content"
@@ -50,26 +48,39 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/score"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
                     android:text="@string/score"
                     android:textSize="10sp"
+                    android:gravity="center"
                     tools:ignore="SmallSp" />
-
                 <TextView
-                    android:id="@+id/maxScore"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/score"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
+                    android:textSize="10sp"
+                    android:gravity="center"
+                    android:text="@string/_0"
+                    tools:ignore="SmallSp" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:text="@string/maxScore"
                     android:textSize="10sp"
+                    android:gravity="center"
+                    tools:ignore="SmallSp,SpUsage" />
+                <TextView
+                    android:id="@+id/maxScore"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="10sp"
+                    android:gravity="center"
+                    android:text="@string/_0"
                     tools:ignore="SmallSp,SpUsage" />
             </LinearLayout>
 

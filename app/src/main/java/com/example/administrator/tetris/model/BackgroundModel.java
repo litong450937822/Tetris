@@ -24,7 +24,7 @@ public class BackgroundModel {
         backgroundPaint.setColor(0x10000000);
         backgroundPaint.setAntiAlias(true);
         statePaint = new Paint();
-        statePaint.setColor(Color.rgb(255, 0, 0));
+        statePaint.setColor(Color.rgb(0, 0, 0));
         statePaint.setTextSize(100);
         statePaint.setAntiAlias(true);
         this.xWidth = xWidth;
