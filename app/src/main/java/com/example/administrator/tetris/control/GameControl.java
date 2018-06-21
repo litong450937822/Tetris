@@ -16,6 +16,10 @@ import com.example.administrator.tetris.model.BackgroundModel;
 import com.example.administrator.tetris.model.BlocksModel;
 import com.example.administrator.tetris.model.ScoreModel;
 import com.example.administrator.tetris.model.StackingBlocksModel;
+import com.example.administrator.tetris.utils.TimeUtil;
+
+import java.util.Date;
+import java.util.logging.SimpleFormatter;
 
 
 public class GameControl {
@@ -29,17 +33,20 @@ public class GameControl {
     private BlocksModel blocksModel;
     //分数模型
     public ScoreModel scoreModel;
+    private TimeUtil timeUtil;
     //暂停状态
     private boolean isStop;
     private boolean isOver;
     //自动下落线程
     private Thread downThread;
+    public int time;
 
     public GameControl(android.os.Handler handler, Resources resources, Context context) {
         this.handler = handler;
         this.mResources = resources;
         initData(context);
     }
+
 
     //设置暂停状态
     @SuppressLint("SetTextI18n")
@@ -75,6 +82,8 @@ public class GameControl {
         stackingBlocksModel = new StackingBlocksModel(mResources);
         //实例化分数模型
         scoreModel = new ScoreModel();
+
+
     }
 
     //开始游戏
@@ -82,6 +91,7 @@ public class GameControl {
     private void startGame() {
         Message msg = new Message();
         msg.obj = "stop";
+        time = 0;
         handler.sendMessage(msg);
         scoreModel.cleanScore();
         if (downThread == null) {
@@ -102,6 +112,7 @@ public class GameControl {
                         //休眠完毕执行一次下落
                         drop();
                         //通知主线程刷新view
+                        time += 500;
                         Message msg = new Message();
                         msg.obj = "invalidate";
                         handler.sendMessage(msg);
@@ -119,6 +130,7 @@ public class GameControl {
         blocksModel.newBlock();
 
     }
+
 
     //快速下降
     public boolean fallen() {
@@ -179,7 +191,7 @@ public class GameControl {
         backgroundModel.drawBackground(canvas);
     }
 
-    public void  drawNext(Canvas canvas) {
+    public void drawNext(Canvas canvas) {
         blocksModel.drawNextBlocks(canvas);
     }
 

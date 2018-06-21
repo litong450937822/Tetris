@@ -21,6 +21,7 @@ import com.example.administrator.tetris.control.GameControl;
 import com.example.administrator.tetris.model.BackgroundModel;
 import com.example.administrator.tetris.model.BlocksModel;
 import com.example.administrator.tetris.model.StackingBlocksModel;
+import com.example.administrator.tetris.utils.TimeUtil;
 import com.example.administrator.tetris.view.NextView;
 import com.example.administrator.tetris.view.TetrisView;
 
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     TextView score;
     //游戏控制器
     GameControl gameControl;
+    TimeUtil timeUtil;
 
     @SuppressLint("HandlerLeak")
     public Handler handler = new Handler() {
@@ -46,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     tetrisView.invalidate();
                     ((TextView)findViewById(R.id.score)).setText(gameControl.scoreModel.score+"");
                     ((TextView)findViewById(R.id.maxScore)).setText(gameControl.scoreModel.bestScore+"");
+                    ((TextView)findViewById(R.id.gameTime)).setText(timeUtil.stringForTime(gameControl.time));
 //                    Log.e("score", ":" + gameControl.scoreModel.score);
                     break;
                 case "stop":
@@ -84,6 +87,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         gameControl = new GameControl(handler, mResources, this);
         tetrisView.setGameControl(gameControl);
         nextView.setGameControl(gameControl);
+        timeUtil = new TimeUtil();
     }
 
     @SuppressLint({"WrongConstant", "SetTextI18n"})
