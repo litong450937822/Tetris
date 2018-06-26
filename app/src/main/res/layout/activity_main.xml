@@ -1,182 +1,232 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="4.5"
-            android:baselineAligned="false"
-            android:orientation="horizontal">
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="4.5"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
 
         <com.example.administrator.tetris.view.TetrisView
-                android:id="@+id/gameView"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:orientation="horizontal"
-                tools:ignore="NestedWeights"/>
+            android:id="@+id/gameView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:orientation="horizontal"
+            tools:ignore="NestedWeights" />
 
 
         <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
             <LinearLayout
-                    android:id="@+id/nextBlock"
-                    android:layout_width="match_parent"
-                    android:layout_height="120dp"
-                    android:padding="5dp"
-                    android:orientation="vertical">
+                android:id="@+id/nextBlock"
+                android:layout_width="match_parent"
+                android:layout_height="130dp"
+                android:orientation="vertical"
+                android:padding="5dp">
+
                 <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/next"
-                        android:textSize="20sp"
-                        android:background="#eee"/>
-                <com.example.administrator.tetris.view.NextView
-                        android:id="@+id/nextBlockView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        tools:ignore="DuplicateIds"/>
-            </LinearLayout>
-
-            <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:background="#eee"
+                    android:text="@string/next"
+                    android:textSize="20sp" />
 
-                <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/score"
-                        android:textSize="10sp"
-                        android:gravity="center"
-                        tools:ignore="SmallSp"/>
-                <TextView
-                        android:id="@+id/score"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textSize="10sp"
-                        android:gravity="center"
-                        android:text="@string/_0"
-                        tools:ignore="SmallSp"/>
-                <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/maxScore"
-                        android:textSize="10sp"
-                        android:gravity="center"
-                        tools:ignore="SmallSp,SpUsage"/>
-                <TextView
-                        android:id="@+id/maxScore"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textSize="10sp"
-                        android:gravity="center"
-                        android:text="@string/_0"
-                        tools:ignore="SmallSp,SpUsage"/>
-                <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textSize="10sp"
-                        android:gravity="center"
-                        android:text="Game Time"
-                        tools:ignore="SmallSp,SpUsage"/>
-                <TextView
-                        android:id="@+id/gameTime"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textSize="10sp"
-                        android:gravity="center"
-                        android:text="00:00"
-                        tools:ignore="SmallSp,SpUsage"/>
+                <com.example.administrator.tetris.view.NextView
+                    android:id="@+id/nextBlockView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:ignore="DuplicateIds" />
             </LinearLayout>
 
-            <Button
+            <LinearLayout
+                android:id="@+id/holdBlock"
+                android:layout_width="match_parent"
+                android:layout_height="130dp"
+                android:orientation="vertical"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#eee"
+                    android:text="@string/hold"
+                    android:textSize="20sp" />
+
+                <com.example.administrator.tetris.view.HoldView
+                    android:id="@+id/holdBlockView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:ignore="DuplicateIds" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/score"
+                    android:textSize="20sp"
+                    tools:ignore="SmallSp" />
+
+                <TextView
+                    android:id="@+id/score"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/_0"
+                    android:textSize="20sp"
+                    tools:ignore="SmallSp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/maxScore"
+                    android:textSize="20sp"
+                    tools:ignore="SmallSp,SpUsage" />
+
+                <TextView
+                    android:id="@+id/maxScore"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/_0"
+                    android:textSize="20sp"
+                    tools:ignore="SmallSp,SpUsage" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/game_time"
+                    android:textSize="20sp"
+                    tools:ignore="SmallSp,SpUsage" />
+
+                <TextView
+                    android:id="@+id/gameTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/_00_00"
+                    android:textSize="20sp"
+                    tools:ignore="SmallSp,SpUsage" />
+
+                <Button
                     android:id="@+id/start"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/start"/>
+                    android:background="@drawable/shape_button2"
+                    android:text="@string/start" />
 
-            <Button
+                <Button
                     android:id="@+id/stop"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/stop"/>
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/shape_button2"
+                    android:text="@string/stop" />
+            </LinearLayout>
+
         </LinearLayout>
     </LinearLayout>
 
     <android.support.constraint.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
         <Button
-                android:id="@+id/left"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="10dp"
-                android:text="@string/leftButton"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="MissingConstraints"/>
+            android:id="@+id/left"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/shape_button"
+            android:text="@string/leftButton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingConstraints" />
 
         <Button
-                android:id="@+id/right"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginLeft="50dp"
-                android:layout_marginStart="50dp"
-                android:layout_marginTop="10dp"
-                android:text="@string/rightButton"
-                app:layout_constraintStart_toEndOf="@+id/left"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="MissingConstraints"/>
+            android:id="@+id/right"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginLeft="60dp"
+            android:layout_marginStart="60dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/shape_button"
+            android:text="@string/rightButton"
+            app:layout_constraintStart_toEndOf="@+id/left"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingConstraints" />
 
         <Button
-                android:id="@+id/rotate"
-                android:layout_width="80dp"
-                android:layout_height="50dp"
-                android:layout_marginEnd="30dp"
-                android:layout_marginRight="30dp"
-                android:layout_marginTop="10dp"
-                android:text="@string/rotateButton"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="MissingConstraints"/>
+            android:id="@+id/rotate"
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/shape_button2"
+            android:text="@string/rotateButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/hold"
+            tools:ignore="MissingConstraints" />
 
         <Button
-                android:id="@+id/down"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginLeft="70dp"
-                android:layout_marginStart="70dp"
-                android:layout_marginTop="5dp"
-                android:text="@string/dwonButton"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/right"
-                tools:ignore="MissingConstraints"/>
+            android:id="@+id/down"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginLeft="80dp"
+            android:layout_marginStart="80dp"
+            android:background="@drawable/shape_button"
+            android:text="@string/dwonButton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/right"
+            tools:ignore="MissingConstraints" />
 
         <Button
-                android:id="@+id/fallen"
-                android:layout_width="80dp"
-                android:layout_height="50dp"
-                android:layout_marginEnd="30dp"
-                android:layout_marginRight="30dp"
-                android:layout_marginTop="5dp"
-                android:text="@string/fallenButton"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rotate"
-                tools:ignore="MissingConstraints"/>
+            android:id="@+id/fallen"
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/shape_button2"
+            android:text="@string/fallenButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rotate"
+            tools:ignore="MissingConstraints" />
+
+        <Button
+            android:id="@+id/hold"
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="30dp"
+            android:layout_marginRight="30dp"
+            android:background="@drawable/shape_button2"
+            android:text="@string/holdButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteY="3dp" />
     </android.support.constraint.ConstraintLayout>
 
 </LinearLayout>

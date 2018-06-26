@@ -6,7 +6,9 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
+
 import com.example.administrator.tetris.Config;
+
 import java.util.Random;
 
 public class BlocksModel {
@@ -20,16 +22,24 @@ public class BlocksModel {
     private Point[] nextBlocks;
     //投影方块
     private Point[] blocksProject;
+    //保存方块
+    private Point[] holdBlocks;
+    private Point[] cheak;
+    public boolean holdFlag = true;
     //当前方块类型
     public int blockType;
     //下一个方块类型
     private int nextBlockType;
+    //保存方块类型
+    private int holdBlockType;
     //方块图片
     private Bitmap blockBitmap;
     //图片区域，绘制位置
     private Rect mSrcRect;
     private Resources mResources;
     private BitmpModel bitmpModel = new BitmpModel();
+    //当前块移动格子数
+    public int moveX, moveY;
 
     public BlocksModel(Resources mResources) {
         this.mResources = mResources;
@@ -61,7 +71,7 @@ public class BlocksModel {
             newNextBlocks();
         //把下一块赋给当前块
         blockType = nextBlockType;
-        blocksData(blockType);
+        blocksData();
         setBlocksProjection(stackingBlocksModel);
         //生成下一块
         newNextBlocks();
@@ -89,7 +99,7 @@ public class BlocksModel {
         return true;
     }
 
-    private void blocksData(int blockType) {
+    private void blocksData() {
         switch (blockType) {
             // 长条
             case 1:
@@ -186,6 +196,123 @@ public class BlocksModel {
         }
     }
 
+    //清楚保存块
+    public void cleanHoldblocks() {
+        holdBlocks = new Point[]{};
+        holdBlockType = 0;
+    }
+
+    //保存方块
+    public void holdBlocks(StackingBlocksModel stackingBlocksModel) {
+        if (!holdFlag)
+            return;
+        if (holdBlockType == 0) {
+            cheakHold(nextBlockType);
+            boolean flag = false;
+            for (Point cheak : cheak) {
+                cheak.x += moveX;
+                cheak.y += moveY;
+                if (checkBoundary(cheak.x, cheak.y, stackingBlocksModel))
+                    flag = true;
+            }
+            if (!flag) {
+                holdBlockType = blockType;
+                holdBlocksData();
+                newBlock(stackingBlocksModel);
+                for (Point block : blocks) {
+                    block.x += moveX;
+                    block.y += moveY;
+                }
+                holdFlag = false;
+                setBlocksProjection(stackingBlocksModel);
+            }
+        } else {
+            cheakHold(holdBlockType);
+            boolean flag = false;
+            for (Point cheak : cheak) {
+                cheak.x += moveX;
+                cheak.y += moveY;
+                if (checkBoundary(cheak.x, cheak.y, stackingBlocksModel))
+                    flag = true;
+            }
+            if (!flag) {
+                int save = blockType;
+                blockType = holdBlockType;
+                holdBlockType = save;
+                blocksData();
+                holdBlocksData();
+                for (Point block : blocks) {
+                    block.x += moveX;
+                    block.y += moveY;
+                }
+                holdFlag = false;
+                setBlocksProjection(stackingBlocksModel);
+            }
+        }
+    }
+
+    private void cheakHold(int type) {
+        switch (type) {
+            // 长条
+            case 1:
+                cheak = new Point[]{
+                        new Point(5, 0),
+                        new Point(3, 0),
+                        new Point(4, 0),
+                        new Point(6, 0)};
+                break;
+            // 田
+            case 2:
+                cheak = new Point[]{
+                        new Point(3, 0),
+                        new Point(3, 1),
+                        new Point(4, 0),
+                        new Point(4, 1)};
+                break;
+            //L
+            case 3:
+                cheak = new Point[]{
+                        new Point(4, 1),
+                        new Point(5, 0),
+                        new Point(5, 1),
+                        new Point(3, 1)};
+                break;
+            //反L
+            case 4:
+                cheak = new Point[]{
+                        new Point(4, 1),
+                        new Point(3, 0),
+                        new Point(3, 1),
+                        new Point(5, 1)};
+                break;
+
+            //T
+            case 5:
+                cheak = new Point[]{
+                        new Point(4, 1),
+                        new Point(3, 1),
+                        new Point(5, 1),
+                        new Point(4, 0)};
+                break;
+            //Z
+            case 6:
+                cheak = new Point[]{
+                        new Point(4, 1),
+                        new Point(3, 0),
+                        new Point(4, 0),
+                        new Point(5, 1)};
+                break;
+            //反Z
+            case 7:
+                cheak = new Point[]{
+                        new Point(5, 1),
+                        new Point(5, 0),
+                        new Point(6, 0),
+                        new Point(4, 1)};
+                break;
+        }
+    }
+
     //生成下一块
     private void newNextBlocks() {
         Random random = new Random();
@@ -251,6 +378,71 @@ public class BlocksModel {
         }
     }
 
+    private void holdBlocksData() {
+        switch (holdBlockType) {
+            // 长条
+            case 1:
+                holdBlocks = new Point[]{
+                        new Point(0, 1),
+                        new Point(1, 1),
+                        new Point(2, 1),
+                        new Point(3, 1)};
+                break;
+            // 田
+            case 2:
+                holdBlocks = new Point[]{
+                        new Point(1, 1),
+                        new Point(2, 1),
+                        new Point(1, 2),
+                        new Point(2, 2)};
+                break;
+            //L
+            case 3:
+                holdBlocks = new Point[]{
+                        new Point(2, 1),
+                        new Point(0, 2),
+                        new Point(1, 2),
+                        new Point(2, 2)};
+                break;
+            //反L
+            case 4:
+                holdBlocks = new Point[]{
+                        new Point(0, 1),
+                        new Point(0, 2),
+                        new Point(1, 2),
+                        new Point(2, 2)};
+                break;
+
+            //T
+            case 5:
+                holdBlocks = new Point[]{
+                        new Point(1, 1),
+                        new Point(0, 2),
+                        new Point(1, 2),
+                        new Point(2, 2)};
+                break;
+            //Z
+            case 6:
+                holdBlocks = new Point[]{
+                        new Point(0, 1),
+                        new Point(1, 1),
+                        new Point(1, 2),
+                        new Point(2, 2)};
+                break;
+            //反Z
+            case 7:
+                holdBlocks = new Point[]{
+                        new Point(1, 1),
+                        new Point(2, 1),
+                        new Point(0, 2),
+                        new Point(1, 2)};
+                break;
+            default:
+                holdBlocks = null;
+                break;
+        }
+    }
+
     //绘制当前方块
     public void drawBlocks(Canvas canvas) {
         //绘制方块
@@ -271,6 +463,20 @@ public class BlocksModel {
         //绘制方块
         blockBitmap = bitmpModel.changeBitmp(nextBlockType, mResources);
         for (Point block : nextBlocks) {
+            Rect mDestRect = new Rect(block.x * Config.blockSize + Config.blockSize / 2, block.y * Config.blockSize,
+                    (block.x * Config.blockSize) + Config.blockSize + Config.blockSize / 2,
+                    (block.y * Config.blockSize) + Config.blockSize);
+            canvas.drawBitmap(blockBitmap, mSrcRect, mDestRect, mBitPaint);
+        }
+    }
+
+    //绘制保存方块
+    public void drawHoldBlocks(Canvas canvas) {
+        if (holdBlocks == null)
+            return;
+        //绘制方块
+        blockBitmap = bitmpModel.changeBitmp(holdBlockType, mResources);
+        for (Point block : holdBlocks) {
             Rect mDestRect = new Rect(block.x * Config.blockSize + Config.blockSize / 2, block.y * Config.blockSize,
                     (block.x * Config.blockSize) + Config.blockSize + Config.blockSize / 2,
                     (block.y * Config.blockSize) + Config.blockSize);
@@ -310,14 +516,18 @@ public class BlocksModel {
             project.x = block.x;
             project.y = block.y;
         }
+        moveX += x;
+        moveY += y;
         setBlocksProjection(stackingBlocksModel);
         return true;
     }
 
     //旋转
-    public boolean rotate(boolean isStop, StackingBlocksModel stackingBlocksModel) {
-        if (isStop)
+    public boolean rotate(boolean isStop, boolean isOver, StackingBlocksModel stackingBlocksModel) {
+        if (isStop || isOver)
             return false;
+//        if (isStop)
+//            return false;
         if (blockType == 2)
             return false;
 

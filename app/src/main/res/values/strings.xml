@@ -11,4 +11,8 @@
     <string name="stop">Stop</string>
     <string name="next">Next</string>
     <string name="_0">0</string>
+    <string name="game_time">GAME TIME</string>
+    <string name="_00_00">00:00</string>
+    <string name="hold">Hold</string>
+    <string name="holdButton">HOLD</string>
 </resources>

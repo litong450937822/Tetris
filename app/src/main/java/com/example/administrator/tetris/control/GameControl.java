@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
+
 import com.example.administrator.tetris.Config;
 import com.example.administrator.tetris.R;
 import com.example.administrator.tetris.model.BackgroundModel;
@@ -34,10 +35,12 @@ public class GameControl {
     //自动下落线程
     private Thread downThread;
     public int time;
+    private Context context;
 
     public GameControl(android.os.Handler handler, Resources resources, Context context) {
         this.handler = handler;
         this.mResources = resources;
+        this.context = context;
         initData(context);
     }
 
@@ -65,7 +68,7 @@ public class GameControl {
         //设置游戏区域宽度 = 屏幕宽度*2/3
         Config.xWidth = width * 2 / 3 - (Config.frame);
         //设置游戏区域的高度 = 宽度*2
-        Config.yHeight = Config.xWidth * 2 + (Config.frame/2);
+        Config.yHeight = Config.xWidth * 2 + (Config.frame / 2);
         Config.width = width - Config.xWidth;
         //初始化方块大小 = 游戏区域宽度/10
         Config.blockSize = Config.xWidth / Config.backgroundX;
@@ -77,8 +80,8 @@ public class GameControl {
         stackingBlocksModel = new StackingBlocksModel(mResources);
         //实例化分数模型
         scoreModel = new ScoreModel();
-
-
+        //获取最高分
+        scoreModel.getBestScore(context);
     }
 
     //开始游戏
@@ -86,10 +89,11 @@ public class GameControl {
     private void startGame() {
         Message msg = new Message();
         msg.obj = "stop";
-        time = 0;
+        time = -3000;
         blocksModel.cleanBlocksProject();
         handler.sendMessage(msg);
         scoreModel.cleanScore();
+
         if (downThread == null) {
             downThread = new Thread() {
                 public void run() {
@@ -106,7 +110,8 @@ public class GameControl {
                         if (isOver || isStop)
                             continue;
                         //休眠完毕执行一次下落
-                        drop();
+                        if (time >= 500)
+                            drop();
                         //通知主线程刷新view
                         time += 500;
                         Message msg = new Message();
@@ -122,6 +127,8 @@ public class GameControl {
         //清除游戏状态
         isOver = false;
         isStop = false;
+        //清除保存方块
+        blocksModel.cleanHoldblocks();
         //生成新方块
         blocksModel.newBlock(stackingBlocksModel);
 
@@ -150,6 +157,10 @@ public class GameControl {
         //堆积完成 消行判断
         int line = this.stackingBlocksModel.cleanLine();
         scoreModel.addScore(line);
+        //清除移动记录
+        blocksModel.moveX = 0;
+        blocksModel.moveY = 0;
+        blocksModel.holdFlag = true;
         //生成新的方块儿
         blocksModel.newBlock(stackingBlocksModel);
         isOver = checkOver();
@@ -159,8 +170,10 @@ public class GameControl {
     //结束判断
     private boolean checkOver() {
         for (Point block : blocksModel.blocks) {
-            if (stackingBlocksModel.StackingBlocks[block.x][block.y] != 0)
+            if (stackingBlocksModel.StackingBlocks[block.x][block.y] != 0) {
+                scoreModel.updateBestScore(context);
                 return true;
+            }
         }
         return false;
     }
@@ -182,33 +195,45 @@ public class GameControl {
         //绘制辅助线
         backgroundModel.drawLine(canvas);
         //绘制游戏状态
-        backgroundModel.drawState(canvas, isOver, isStop);
+        if (time > 0)
+            backgroundModel.drawState(canvas, isOver, isStop);
         //绘制背景
         backgroundModel.drawBackground(canvas);
         //绘制当前方块投影
         blocksModel.drawBlocksProject(canvas);
+        //绘制开始提示
+        backgroundModel.drawStartPrompt(canvas, time);
     }
 
     public void drawNext(Canvas canvas) {
         blocksModel.drawNextBlocks(canvas);
     }
 
+    public void drawHold(Canvas canvas) {
+        blocksModel.drawHoldBlocks(canvas);
+    }
+
     public void onClick(int id) {
         switch (id) {
             case R.id.left:
-                blocksModel.move(-1, 0, isStop, stackingBlocksModel);
+                if (cheackTime())
+                    blocksModel.move(-1, 0, isStop, stackingBlocksModel);
                 break;
             case R.id.right:
-                blocksModel.move(1, 0, isStop, stackingBlocksModel);
+                if (cheackTime())
+                    blocksModel.move(1, 0, isStop, stackingBlocksModel);
                 break;
             case R.id.down:
-                drop();
+                if (cheackTime())
+                    drop();
                 break;
             case R.id.fallen:
-                fallen();
+                if (cheackTime())
+                    fallen();
                 break;
             case R.id.rotate:
-                blocksModel.rotate(isStop, stackingBlocksModel);
+                if (cheackTime())
+                    blocksModel.rotate(isStop, isOver, stackingBlocksModel);
                 break;
             case R.id.stop:
                 setStop();
@@ -217,6 +242,14 @@ public class GameControl {
             case R.id.start:
                 startGame();
                 break;
+            case R.id.hold:
+                if (cheackTime())
+                    blocksModel.holdBlocks(stackingBlocksModel);
+                break;
         }
+    }
+
+    private boolean cheackTime() {
+        return time >= 0;
     }
 }

@@ -6,16 +6,13 @@ import android.util.AttributeSet;
 import android.view.View;
 import com.example.administrator.tetris.control.GameControl;
 
-/**
- * 此类目前没用
- */
 public class TetrisView extends View {
     private GameControl gameControl;
 
     public TetrisView(Context context, AttributeSet attrs) {
         super(context, attrs);
 //        this.setLayoutParams(new WindowManager.LayoutParams(Config.xWidth, Config.yHeight));
-//        this.setBackgroundColor(0x10000000);
+//        this.setBackgroundColor(0xFF332941);
     }
 
     public void setGameControl(GameControl gameControl) {

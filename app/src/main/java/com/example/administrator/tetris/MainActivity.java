@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.example.administrator.tetris.control.GameControl;
 import com.example.administrator.tetris.utils.TimeUtil;
+import com.example.administrator.tetris.view.HoldView;
 import com.example.administrator.tetris.view.NextView;
 import com.example.administrator.tetris.view.TetrisView;
 
@@ -21,6 +22,7 @@ import com.example.administrator.tetris.view.TetrisView;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     TetrisView tetrisView;
     NextView nextView;
+    HoldView holdView;
     TextView score;
     //游戏控制器
     GameControl gameControl;
@@ -53,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     };
 
+    @SuppressLint({"SetTextI18n", "WrongViewCast"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,11 +63,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         tetrisView = findViewById(R.id.gameView);
         nextView = findViewById(R.id.nextBlockView);
+        holdView = findViewById(R.id.holdBlockView);
         Button left = findViewById(R.id.left);
         Button right = findViewById(R.id.right);
         Button down = findViewById(R.id.down);
         Button fallen = findViewById(R.id.fallen);
         Button rotate = findViewById(R.id.rotate);
+        Button hold = findViewById(R.id.hold);
         Button start = findViewById(R.id.start);
         Button stop = findViewById(R.id.stop);
         score = findViewById(R.id.score);
@@ -73,13 +78,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         down.setOnClickListener(this);
         fallen.setOnClickListener(this);
         rotate.setOnClickListener(this);
+        hold.setOnClickListener(this);
         start.setOnClickListener(this);
         stop.setOnClickListener(this);
         Resources mResources = getResources();
         gameControl = new GameControl(handler, mResources, this);
         tetrisView.setGameControl(gameControl);
         nextView.setGameControl(gameControl);
+        holdView.setGameControl(gameControl);
         timeUtil = new TimeUtil();
+        ((TextView)findViewById(R.id.maxScore)).setText(gameControl.scoreModel.bestScore+"");
     }
 
     @SuppressLint({"WrongConstant", "SetTextI18n"})
@@ -89,6 +97,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //重绘view
         tetrisView.invalidate();
         nextView.invalidate();
+        holdView.invalidate();
     }
 
     @Override
