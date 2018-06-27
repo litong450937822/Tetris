@@ -89,6 +89,9 @@ public class GameControl {
     private void startGame() {
         Message msg = new Message();
         msg.obj = "stop";
+        blocksModel.holdFlag = true;
+        blocksModel.moveX = 0;
+        blocksModel.moveY = 0;
         time = -3000;
         blocksModel.cleanBlocksProject();
         handler.sendMessage(msg);
@@ -206,7 +209,8 @@ public class GameControl {
     }
 
     public void drawNext(Canvas canvas) {
-        blocksModel.drawNextBlocks(canvas);
+        if (time >= 0)
+            blocksModel.drawNextBlocks(canvas);
     }
 
     public void drawHold(Canvas canvas) {
