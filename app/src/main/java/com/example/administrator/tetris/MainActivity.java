@@ -40,10 +40,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 case "invalidate":
                     //刷新重绘view
                     tetrisView.invalidate();
+                    nextView.invalidate();
                     ((TextView)findViewById(R.id.score)).setText(gameControl.scoreModel.score+"");
                     ((TextView)findViewById(R.id.maxScore)).setText(gameControl.scoreModel.bestScore+"");
                     ((TextView)findViewById(R.id.gameTime)).setText(timeUtil.stringForTime(gameControl.time));
-//                    Log.e("score", ":" + gameControl.scoreModel.score);
                     break;
                 case "stop":
                     ((Button)findViewById(R.id.stop)).setText("Stop");
